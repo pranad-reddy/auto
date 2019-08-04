@@ -1,9 +1,9 @@
 package Models;
 
 public class Reservation {
-    private Car car;
-    private Square square;
-    private int timeStep;
+    Car car;
+    Square square;
+    int timeStep;
 
     public Reservation(Car car, Square square, int timeStep) {
         this.car = car;
@@ -11,15 +11,15 @@ public class Reservation {
         this.timeStep = timeStep;
     }
 
-    Car getCar() {
+    public Car getCar() {
         return car;
     }
 
-    Square getSquare() {
+    public Square getSquare() {
         return square;
     }
 
-    int getTimeStep() {
+    public int getTimeStep() {
         return timeStep;
     }
 }
