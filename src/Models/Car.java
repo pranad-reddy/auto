@@ -10,6 +10,8 @@ public class Car {
     private Square location; //Square on grid that car is currently on
     public List<Reservation> reservations; //list of reservations
     private Grid grid;
+    private static int carCount = 0;
+    public int id;
 
     public Car(double acc, double dec, double speed, Square location, Direction direction, Grid grid) {
         this.acc = acc;
@@ -19,6 +21,17 @@ public class Car {
         this.direction = direction;
         this.grid = grid;
         this.reservations = new ArrayList<>();
+        this.id = ++carCount;
+    }
+    //https://www.drivingtestsuccess.com/blog/safe-separation-distance
+    private int getNumSquaresToReserve() {
+        //TODO change to be more readable
+        //mph to m/s
+        //double speed_metric = speed / 2.237;
+        //4.572 is meters to 15 feet
+        //return 1 + (int)Math.ceil(speed_metric * speed_metric / (2 * .7 * 9.8) / 4.572);
+        return 1 + (int)Math.ceil(speed / 2.237 / 3);
+
     }
 
     public Square getLocation() {
@@ -29,40 +42,75 @@ public class Car {
         this.location = location;
     }
 
-    public void reservePath() {
+    public void reservePath(int timeStep) {
+        int pathLength = getNumSquaresToReserve();
+        System.out.println("Car Id: " + this.id);
+        System.out.println("timestep: " + timeStep);
+        boolean added = false;
         switch (direction)
         {
             case SOUTH:
-                for (int y = location.y + 1; y < grid.squareArr.length; y++) {
+                for (int y = location.y; y < grid.squareArr.length && y < location.y + pathLength; y++) {
                     Square square = grid.squareArr[y][location.x];
-                    addReservation(square);
+                    added = addReservation(square, timeStep);
                 }
+                break;
             case NORTH:
-                for (int y = location.y - 1; y >= 0; y--) {
+                for (int y = location.y; y >= 0 && y > location.y - pathLength; y--) {
                     Square square = grid.squareArr[y][location.x];
-                    addReservation(square);
+                    added = addReservation(square, timeStep);
                 }
+                break;
             case EAST:
-                for (int x = location.x + 1; x < grid.squareArr.length; x++) {
+                for (int x = location.x; x < grid.squareArr.length && x < location.x + pathLength; x++) {
                     Square square = grid.squareArr[location.y][x];
-                    addReservation(square);
+                    added = addReservation(square, timeStep);
                 }
+                break; 
             case WEST:
-                for (int x = location.x - 1; x >= 0; x--) {
+                for (int x = location.x; x >= 0 && x > location.x - pathLength; x--) {
                     Square square = grid.squareArr[location.y][x];
-                    addReservation(square);
+                    added = addReservation(square, timeStep);
                 }
+                break; 
         }
         //algorithm using Square.getAvailableTimes to create reserved path
     }
 
-    private void addReservation(Square square) {
-        int count = 0;
-        while (count < square.getAvailableTimes().length)
-        {
-            if (square.getAvailableTimes()[count])
-                reservations.add(new Reservation(this, square, count));
-            count++;
+    public boolean updateCarLocation(Grid grid, int timeStep) {
+        int squaresMoved = (int)Math.ceil(speed / 2.237 / 3);
+        while (squaresMoved > 0) {
+            if (reservations.size() == 0) {
+                //TODO this is a crash or something bad
+                grid.cars.remove(this);
+                return false;
+            }
+            //Reservation r = reservations.remove(0);
+            //System.out.println("Timestep: " + r.timeStep + " | " + r.getSquare());
+            int currTimeStep = reservations.remove(0).getTimeStep();
+            if (currTimeStep == timeStep)
+                squaresMoved--;
         }
+        if (reservations.size() == 0) {
+            //TODO this is a crash or something bad
+            grid.cars.remove(this);
+            return false;
+        }
+        setLocation(reservations.get(0).getSquare());
+        System.out.println("Location: " + location);
+        return true;
+    }
+
+    private boolean addReservation(Square square, int timeStep) {
+       if (square.getAvailableTimes()[timeStep]) {
+            reservations.add(new Reservation(this, square, timeStep));
+            System.out.println(square);
+            square.getAvailableTimes()[timeStep] = false;
+            return true;
+        }
+        else {
+           System.out.println(square + String.valueOf(timeStep) + this);
+           return false;
+       }
     }
 }

@@ -22,4 +22,9 @@ public class Reservation {
     public int getTimeStep() {
         return timeStep;
     }
+
+    @Override
+    public String toString() {
+        return getSquare().toString() + " : Timestep{" + timeStep + "}";
+    }
 }

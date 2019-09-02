@@ -17,4 +17,12 @@ public class Square {
     boolean[] getAvailableTimes(){
         return availableTimes;
     }
+
+    @Override
+    public String toString() {
+        return "Square{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }
