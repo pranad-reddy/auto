@@ -3,6 +3,9 @@ package Models;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * This class represents the intersection and is made up of Square objects.
+ */
 public class Grid {
     public List<Car> cars;
     public Square[][] squareArr;
@@ -15,6 +18,10 @@ public class Grid {
                 squareArr[i][j] = new Square(j, i);
     }
 
+    /**
+     * Adds car to list of cars on grid
+     * @param c Car to add
+     */
     public void addCar(Car c) {
         cars.add(c);
     }

@@ -1,7 +1,12 @@
 package Models;
+
+import Main.Simulation;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents a car and holds the logic for reserving paths through the intersection.
+ */
 public class Car {
 
     private double acc, dec; //safe acceleration and deceleration
@@ -23,25 +28,38 @@ public class Car {
         this.reservations = new ArrayList<>();
         this.id = ++carCount;
     }
-    //https://www.drivingtestsuccess.com/blog/safe-separation-distance
+
+    /**
+     * Calculate and return num squares to reserve, including current location, based on speed and timesteps per sec
+     * @return int Number of squares to reserve
+     */
     private int getNumSquaresToReserve() {
-        //TODO change to be more readable
-        //mph to m/s
-        //double speed_metric = speed / 2.237;
-        //4.572 is meters to 15 feet
-        //return 1 + (int)Math.ceil(speed_metric * speed_metric / (2 * .7 * 9.8) / 4.572);
-        return 1 + (int)Math.ceil(speed / 2.237 / 3);
+        double mphToMetric = 1 / 2.237;
+        //account 1 for location of car
+        return 1 + (int)Math.ceil(speed * mphToMetric / Simulation.TIMESTEPSPERSEC);
 
     }
 
+    /**
+     * Return current location square
+     * @return Square location
+     */
     public Square getLocation() {
         return location;
     }
 
+    /**
+     * Sets current location to Square passed as parameter
+     * @param location
+     */
     public void setLocation(Square location) {
         this.location = location;
     }
 
+    /**
+     * Reserves path for car based on direction, speed and availability
+     * @param timeStep Current timestep to reserve path for
+     */
     public void reservePath(int timeStep) {
         int pathLength = getNumSquaresToReserve();
         System.out.println("Car Id: " + this.id);
@@ -74,14 +92,18 @@ public class Car {
                 }
                 break; 
         }
-        //algorithm using Square.getAvailableTimes to create reserved path
     }
 
-    public boolean updateCarLocation(Grid grid, int timeStep) {
+    /**
+     * Iterates through reservations and updates car location based on current speed, removing old reservations
+     * @param timeStep Current timestep
+     * @return boolean Whether the car is still on the grid or not
+     */
+    public boolean updateCarLocation(int timeStep) {
         int squaresMoved = (int)Math.ceil(speed / 2.237 / 3);
         while (squaresMoved > 0) {
             if (reservations.size() == 0) {
-                //TODO this is a crash or something bad
+                //TODO handle crashes
                 grid.cars.remove(this);
                 return false;
             }
@@ -92,7 +114,7 @@ public class Car {
                 squaresMoved--;
         }
         if (reservations.size() == 0) {
-            //TODO this is a crash or something bad
+            //TODO handle crashes
             grid.cars.remove(this);
             return false;
         }
@@ -101,6 +123,12 @@ public class Car {
         return true;
     }
 
+    /**
+     * Creates reservation if given Square is available for given timestep. Returns result boolean
+     * @param square Square to attempt to make reservation for
+     * @param timeStep Current timestep
+     * @return boolean Whether the reservation could be made or not
+     */
     private boolean addReservation(Square square, int timeStep) {
        if (square.getAvailableTimes()[timeStep]) {
             reservations.add(new Reservation(this, square, timeStep));
