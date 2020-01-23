@@ -26,13 +26,13 @@ public class Simulation {
             System.out.println("Num cars: " + grid.cars.size());
             if (grid.cars.size() == 0)
                 break;
-            for (int j = 0; j < grid.cars.size(); j++){
+            int j = 0;
+            while (j < grid.cars.size()) {
                 Car car = grid.cars.get(j);
                 car.reservePath(timeStep);
                 boolean onGrid = car.updateCarLocation(timeStep);
-                if (!onGrid) {
-                    j--;
-                }
+                if (onGrid)
+                    j++;
                 System.out.println();
             }
             timeStep++;
@@ -46,10 +46,10 @@ public class Simulation {
     private void addNewCars() {
         Car car1 = new Car(12, 11, 30, grid.squareArr[TOTAL_TIMESTEPS - 1][TOTAL_TIMESTEPS / 2 + 1], Direction.NORTH, grid);
         Car car2 = new Car(12, 11, 30, grid.squareArr[TOTAL_TIMESTEPS - 1][TOTAL_TIMESTEPS / 2 + 2], Direction.NORTH, grid);
-        Car car3 = new Car(12, 11, 30, grid.squareArr[TOTAL_TIMESTEPS / 2 - 2][TOTAL_TIMESTEPS - 1], Direction.WEST, grid);
-        Car car4 = new Car(12, 11, 30, grid.squareArr[TOTAL_TIMESTEPS / 2 - 3][TOTAL_TIMESTEPS - 1], Direction.WEST, grid);
-        Car car5 = new Car(12, 11, 30, grid.squareArr[TOTAL_TIMESTEPS / 2 + 1][0], Direction.EAST, grid);
-        Car car6 = new Car(12, 11, 30, grid.squareArr[TOTAL_TIMESTEPS / 2 + 2][0], Direction.EAST, grid);
+//        Car car3 = new Car(12, 11, 30, grid.squareArr[TOTAL_TIMESTEPS / 2 - 2][TOTAL_TIMESTEPS - 1], Direction.WEST, grid);
+//        Car car4 = new Car(12, 11, 30, grid.squareArr[TOTAL_TIMESTEPS / 2 - 3][TOTAL_TIMESTEPS - 1], Direction.WEST, grid);
+//        Car car5 = new Car(12, 11, 30, grid.squareArr[TOTAL_TIMESTEPS / 2 + 1][0], Direction.EAST, grid);
+//        Car car6 = new Car(12, 11, 30, grid.squareArr[TOTAL_TIMESTEPS / 2 + 2][0], Direction.EAST, grid);
         Car car7 = new Car(12, 11, 30, grid.squareArr[0][TOTAL_TIMESTEPS / 2 - 2], Direction.SOUTH, grid);
         Car car8 = new Car(12, 11, 30, grid.squareArr[0][TOTAL_TIMESTEPS / 2 - 3], Direction.SOUTH, grid);
         grid.addCar(car1);
