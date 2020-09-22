@@ -40,6 +40,6 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return getSquare().toString() + " : Timestep{" + timeStep + "}";
+        return getSquare().toString() + " : Timestep {" + timeStep + "}";
     }
 }
