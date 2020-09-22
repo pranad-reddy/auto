@@ -9,7 +9,7 @@ When a car enters the intersection, it must reserve a safe path through it. The 
 
 -----
 #### Assumptions
-- Car and Square lengths and widths are all 15 feet
+- Car and Square lengths and widths are all 15 ft
 - Each time step is 1/3 second
 - Default car speed is 30 mph
 - No human input
